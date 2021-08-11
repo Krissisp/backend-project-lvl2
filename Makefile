@@ -1,2 +1,3 @@
 gendiff:
-	node program.cjs -h
+	node bin/gendiff.js 
+	

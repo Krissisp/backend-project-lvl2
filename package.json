@@ -3,7 +3,7 @@
   "type": "module",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "gendiff.mjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,7 +12,6 @@
   "dependencies": {
     "commander": "^8.1.0"
   },
-  "bin": {
-    "gendiff": "bin/gendiff.js"
-  }
+  "bin": ".gendiff.js"
+  
 }

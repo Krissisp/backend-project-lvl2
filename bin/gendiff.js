@@ -1,4 +1,4 @@
 #!/usr/bin/env node
-import  program  from "../program.js";
+import  genDiff from '../gendiff.cjs'
 
-program.parse(process.argv);
+genDiff();
