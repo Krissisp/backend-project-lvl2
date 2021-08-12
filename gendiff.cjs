@@ -1,7 +1,6 @@
 const program  = require('commander');
 const fs = require('fs');
 const path = require('path');
-
 program
 .version('0.0.1')
 .description('Compares two configuration files and shows a difference')
@@ -50,6 +49,5 @@ program
 
     console.log(result);
 });
-program.parse(process.argv)
-//export default genDiff;
+program.parse(process.argv);
 
