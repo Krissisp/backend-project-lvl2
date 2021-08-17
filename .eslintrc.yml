@@ -1,30 +1,20 @@
+plugins:
+  - jest
+
 env:
-  browser: true
+   node: true
   es2021: true
 extends:
   - airbnb-base
+  - eslint:recommended
+  - plugin:jest/recommended
 parserOptions:
-  ecmaVersion: 12
+  ecmaVersion: 2020
+  sourceType: module
 rules: {
-   semi: error,
-   no-unused-vars: off,
-   func-names: off,
-   indent: off,
-   no-else-return: off,
-   prefer-arrow-callback: off,
-   no-undef: off,
-   no-use-before-define: off,
-   comma-dangle: off,
-   eol-last: off,
-   no-trailing-spaces: off,
-   linebreak-style: off,
-   no-console: off,
-   no-restricted-globals: off,
-   object-shorthand: off,
-   no-shadow: off,
-   no-debugger: off,
-   prefer-const: off,
-   no-multiple-empty-lines: off,
-   exceptions: off 
+  no-multi-spaces: off,
+  no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }],
+  no-console: off,
+  javascript.validate.enable": off,
+  import/no-unused-modules: [error, {missingExports: false, unusedExports: true}]
 }
-

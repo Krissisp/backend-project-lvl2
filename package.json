@@ -3,9 +3,9 @@
   "type": "module",
   "version": "1.0.0",
   "description": "",
-  "main": "gendiff.mjs",
+  "main": "./__fixtures__/gendiff.cjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "Krisrina Palenykh",
   "license": "ISC",
@@ -15,8 +15,12 @@
   },
   "bin": ".gendiff.js",
   "devDependencies": {
+    "@jest/globals": "^27.0.6",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.24.0"
+    "eslint-plugin-import": "^2.24.0",
+    "jest": "^27.0.6",
+    "jest-circus": "^27.0.6",
+    "jest-cli": "^27.0.6"
   }
 }
