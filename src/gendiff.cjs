@@ -1,4 +1,4 @@
-
+const { parsersYml } = require('./parsers.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -8,8 +8,17 @@ const genDiff = (filepath1, filepath2) => {
   let result = '{';
   const obj = readFile(filepath1);
   const obj2 = readFile(filepath2);
-  const objJs = JSON.parse(obj);
-  const obj2Js = JSON.parse(obj2);
+  let objJs;
+  let obj2Js;
+  if (path.extname(filepath1) === 'json' && path.extname(filepath2) === 'json'){
+     objJs = JSON.parse(obj);
+     obj2Js = JSON.parse(obj2);
+  }
+
+  if (path.extname(filepath1) !== 'json' && path.extname(filepath2) !== 'json'){
+     objJs = parsersYml(obj);
+     obj2Js = parsersYml(obj2);
+  }
   const objFix = Object.entries(objJs).sort();
   const obj2Fix = Object.entries(obj2Js).sort();
   const object = {};
