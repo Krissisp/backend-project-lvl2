@@ -1,11 +1,74 @@
 const { parsersYml } = require('./parsers.js');
 const fs = require('fs');
 const path = require('path');
+const _ = require('lodash');
+
+const withoutСomparison = (ob, h) => {
+  let predRes = '{';
+  for(const podOb in ob) {
+    if(typeof(ob[podOb]) !== 'object') {
+      predRes += '\n' + ' '.repeat(h + 4) + `${podOb}: ${ob[podOb]}`;
+    } else {
+      predRes += '\n' + ' '.repeat(h) + `${podOb}: `;
+      predRes += withoutСomparison(ob[podOb], h + 1);
+    }
+  }
+  predRes += '\n' + ' '.repeat(h -1) + '}'
+  return predRes;
+};
+
+const stringify = (value1, value2, replacer = ' ', space = 1) => {
+
+  const iter = (ob1, ob2, depth = 0) => {
+ 
+   let result = '{';
+     
+     for(const element in ob1) {
+        if(typeof(ob1[element]) !== 'object' && _.has(ob2, `${element}`) && ob1[element] === ob2[element]) {
+          result += '\n' + replacer.repeat(space * depth) + `    ${element}: ${ob1[element]}`; 
+        } 
+
+        if(typeof(ob1[element]) !== 'object' && !_.has(ob2, `${element}`)) {
+          result += '\n' + replacer.repeat(space * depth) + `- ${element}: ${ob1[element]}`; 
+        }
+
+        if(typeof(ob1[element]) !== 'object' && _.has(ob2, `${element}`) && ob1[element] !== ob2[element]) {
+          result += '\n' + replacer.repeat(space * depth) + `- ${element}: ${ob1[element]}`; 
+          result += '\n' + replacer.repeat(space * depth) + `+ ${element}: ${ob2[element]}`;
+        } 
+
+        if(typeof(ob1[element]) === 'object' && !_.has(ob2, `${element}`)) {
+          result += '\n'+ replacer.repeat(space * depth) + `- ${element}: `; 
+          result += withoutСomparison(ob1[element], depth + 1);
+        }
+
+        if(typeof(ob1[element]) === 'object' && _.has(ob2, `${element}`) && typeof(ob2[element]) === 'object') {
+          result += '\n'+ replacer.repeat(space * depth) + `  ${element}: `; 
+          result += iter(ob1[element], ob2[element], depth + 1);
+        }
+         
+      }
+    for(const element2 in ob2){
+      if(typeof(ob2[element2]) === 'object' && !_.has(ob1, `${element2}`)) {
+        result += '\n'+ replacer.repeat(space * depth) + `+ ${element2}: `; 
+        result += withoutСomparison(ob2[element2], depth + 1);
+      }
+
+      if(typeof(ob2[element2]) !== 'object' && !_.has(ob1, `${element2}`)) {
+        result += '\n'+ replacer.repeat(space * depth) + `+ ${element2}: ${ob2[element2]}`; 
+      }
+    }
+    
+    result += '\n' + replacer.repeat(space * (depth -1)) + '}'
+   return result;
+  }
+   return iter(value1, value2, 1)
+ };
+ 
 
 const genDiff = (filepath1, filepath2) => {
   const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
   const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
-  let result = '{';
   const obj = readFile(filepath1);
   const obj2 = readFile(filepath2);
   let objJs;
@@ -21,38 +84,11 @@ const genDiff = (filepath1, filepath2) => {
   }
   const objFix = Object.entries(objJs).sort();
   const obj2Fix = Object.entries(obj2Js).sort();
-  const object = {};
-  const object2 = {};
-  for (const [key, value] of objFix) {
-    object[key] = value;
-  }
+  console.log('objFix', objFix)
+  console.log('obj2Fix', obj2Fix)
 
-  for (const [key2, value2] of obj2Fix) {
-    object2[key2] = value2;
-  }
-
-  for (const element in object) {
-    if (object2.hasOwnProperty(element) && object2[element] === object[element]) {
-      result += `\n   ${element}: ${object[element]}`;
-    }
-
-    if (object2.hasOwnProperty(element) && object2[element] !== object[element]) {
-      result += `\n - ${element}: ${object[element]}`;
-      result += `\n + ${element}: ${object2[element]}`;
-    }
-
-    if (!object2.hasOwnProperty(element)) {
-      result += `\n - ${element}: ${object[element]}`;
-    }
-  }
-
-  for (const element2 in object2) {
-    if (!object.hasOwnProperty(element2)) {
-      result += `\n + ${element2}: ${object2[element2]}`;
-    }
-  }
-  result += '\n }';
-  return result;
+  const comparison = stringify(objJs, obj2Js);
+  return comparison;
 };
 
-module.exports = { genDiff } ;
+module.exports = { genDiff, withoutСomparison, stringify};
