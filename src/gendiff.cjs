@@ -3,67 +3,98 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
 
-const withoutСomparison = (ob, h) => {
+
+const withoutСomparison = (ob, h = 1, space) => {
   let predRes = '{';
   for(const podOb in ob) {
     if(typeof(ob[podOb]) !== 'object') {
-      predRes += '\n' + ' '.repeat(h + 4) + `${podOb}: ${ob[podOb]}`;
+      predRes += '\n' + ' '.repeat(h * space + 4) + `${podOb}: ${ob[podOb]}`;
     } else {
-      predRes += '\n' + ' '.repeat(h) + `${podOb}: `;
-      predRes += withoutСomparison(ob[podOb], h + 1);
+      predRes += '\n' + ' '.repeat(h * space + 4) + `${podOb}: `;
+      predRes += withoutСomparison(ob[podOb], h + 1, space);
     }
   }
-  predRes += '\n' + ' '.repeat(h -1) + '}'
+  predRes += '\n' + ' '.repeat(space * h) + '}'
   return predRes;
 };
 
-const stringify = (value1, value2, replacer = ' ', space = 1) => {
+const getOperator = (ob, ob1, key) => {
+  if(_.has(ob, `${key}`) && _.has(ob1, `${key}`)) {
+    return ' ';
+  }
+  if(!_.has(ob, `${key}`) && _.has(ob1, `${key}`)) {
+    return '+';
+  } 
+  return '-';
+};
 
-  const iter = (ob1, ob2, depth = 0) => {
+const getValue = (ob, ob1, key) => {
+
+  if(!_.has(ob, `${key}`) && _.has(ob1, `${key}`)) {
+     return `${ob1[key]}`; 
+  } 
+  if(_.has(ob, `${key}`) && !_.has(ob1, `${key}`)) {
+    return `${ob[key]}`; 
+  }
  
-   let result = '{';
-     
-     for(const element in ob1) {
-        if(typeof(ob1[element]) !== 'object' && _.has(ob2, `${element}`) && ob1[element] === ob2[element]) {
-          result += '\n' + replacer.repeat(space * depth) + `    ${element}: ${ob1[element]}`; 
-        } 
+  return `${ob[key]}`; 
+};
 
-        if(typeof(ob1[element]) !== 'object' && !_.has(ob2, `${element}`)) {
-          result += '\n' + replacer.repeat(space * depth) + `- ${element}: ${ob1[element]}`; 
-        }
+const getValueObject = (ob, ob1, key, depth = 1,  space = 1) => {
+  if(_.has(ob, `${key}`) && _.has(ob1, `${key}`)) { 
+    return  iter(ob[key], ob1[key], depth + 1, space) + '\n' + ' '.repeat(space * (depth +1)) + '}';
+  }
+  if(!_.has(ob, `${key}`) && _.has(ob1, `${key}` )) {
+    return withoutСomparison(ob1[key], depth + 1, space);
+  }
+  if(_.has(ob, `${key}`) && !_.has(ob1, `${key}` )) {
+    return withoutСomparison(ob[key], depth + 1, space);
+  } 
+}
 
-        if(typeof(ob1[element]) !== 'object' && _.has(ob2, `${element}`) && ob1[element] !== ob2[element]) {
-          result += '\n' + replacer.repeat(space * depth) + `- ${element}: ${ob1[element]}`; 
-          result += '\n' + replacer.repeat(space * depth) + `+ ${element}: ${ob2[element]}`;
-        } 
+const iter = (value1, value2, depth = 0, space)  => {
+  const mergeObject = {...value1, ...value2};
 
-        if(typeof(ob1[element]) === 'object' && !_.has(ob2, `${element}`)) {
-          result += '\n'+ replacer.repeat(space * depth) + `- ${element}: `; 
-          result += withoutСomparison(ob1[element], depth + 1);
-        }
-
-        if(typeof(ob1[element]) === 'object' && _.has(ob2, `${element}`) && typeof(ob2[element]) === 'object') {
-          result += '\n'+ replacer.repeat(space * depth) + `  ${element}: `; 
-          result += iter(ob1[element], ob2[element], depth + 1);
-        }
-         
+  const mergeObjectSort = Object.entries(mergeObject).sort()
+  return mergeObjectSort.reduce((acc, element) =>{
+    const operator = getOperator(value1, value2, element[0]);
+    
+    if(typeof(element[1]) === 'object') {
+      acc += `\n ${' '.repeat(space * depth)} ${operator} ${element[0]}: `
+      acc += getValueObject(value1, value2, element[0], depth, space);
+      //acc += '\n' + ' '.repeat(space * depth) + '}'
+    } else {
+      
+    if(_.has(value1, `${element[0]}`) && _.has(value2, `${element[0]}`) && value1[element[0]] !== value2[element[0]]) {
+      if(typeof(value1[element[0]]) === 'object' && typeof(value2[element[0]]) !== 'object') {
+        acc += `\n ${' '.repeat(space * depth)} - ${element[0]}: ${withoutСomparison(value1[element[0]], depth + 1, space)}`
+        acc += `\n ${' '.repeat(space * depth)} + ${element[0]}: ${value2[element[0]]}`
       }
-    for(const element2 in ob2){
-      if(typeof(ob2[element2]) === 'object' && !_.has(ob1, `${element2}`)) {
-        result += '\n'+ replacer.repeat(space * depth) + `+ ${element2}: `; 
-        result += withoutСomparison(ob2[element2], depth + 1);
+      if(typeof(value1[element[0]]) !== 'object' && typeof(value2[element[0]]) === 'object') {
+        acc += `\n ${' '.repeat(space * depth)} - ${element[0]}: ${value1[element[0]]}`
+        acc += `\n ${' '.repeat(space * depth)} + ${element[0]}: ${withoutСomparison(value2[element[0]], depth + 1, space)}`
+      } 
+      if(typeof(value1[element[0]]) !== 'object' && typeof(value2[element[0]]) !== 'object') {
+        acc += `\n ${' '.repeat(space * depth)} - ${element[0]}: ${value1[element[0]]}`
+        acc += `\n ${' '.repeat(space * depth)} + ${element[0]}: ${value2[element[0]]}`
       }
-
-      if(typeof(ob2[element2]) !== 'object' && !_.has(ob1, `${element2}`)) {
-        result += '\n'+ replacer.repeat(space * depth) + `+ ${element2}: ${ob2[element2]}`; 
-      }
+    } 
+    
+    else {
+      acc += `\n ${' '.repeat(space * depth)} ${operator} ${element[0]}: `
+      acc += getValue(value1, value2, element[0]);
     }
     
-    result += '\n' + replacer.repeat(space * (depth -1)) + '}'
-   return result;
   }
-   return iter(value1, value2, 1)
- };
+    return acc;
+  }, '{')
+};
+
+const stringify = (ob1, ob2, space = 1) => {
+  
+  return iter(ob1, ob2, 0, space);  
+};
+
  
 
 const genDiff = (filepath1, filepath2) => {
@@ -84,11 +115,9 @@ const genDiff = (filepath1, filepath2) => {
   }
   const objFix = Object.entries(objJs).sort();
   const obj2Fix = Object.entries(obj2Js).sort();
-  console.log('objFix', objFix)
-  console.log('obj2Fix', obj2Fix)
 
-  const comparison = stringify(objJs, obj2Js);
-  return comparison;
+  const comparison = stringify(objJs, obj2Js, 4);
+  return comparison + '\n}';
 };
 
-module.exports = { genDiff, withoutСomparison, stringify};
+module.exports = { genDiff, withoutСomparison, stringify, getValueObject, getValue};
