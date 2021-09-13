@@ -3,7 +3,6 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
 
-
 const withoutСomparison = (ob, h = 1, space) => {
   let predRes = '{';
   for(const podOb in ob) {
@@ -54,7 +53,6 @@ const getValueObject = (ob, ob1, key, depth = 1,  space = 1) => {
 
 const iter = (value1, value2, depth = 0, space)  => {
   const mergeObject = {...value1, ...value2};
-
   const mergeObjectSort = Object.entries(mergeObject).sort()
   return mergeObjectSort.reduce((acc, element) =>{
     const operator = getOperator(value1, value2, element[0]);
@@ -62,7 +60,6 @@ const iter = (value1, value2, depth = 0, space)  => {
     if(typeof(element[1]) === 'object') {
       acc += `\n ${' '.repeat(space * depth)} ${operator} ${element[0]}: `
       acc += getValueObject(value1, value2, element[0], depth, space);
-      //acc += '\n' + ' '.repeat(space * depth) + '}'
     } else {
       
     if(_.has(value1, `${element[0]}`) && _.has(value2, `${element[0]}`) && value1[element[0]] !== value2[element[0]]) {
@@ -95,8 +92,6 @@ const stringify = (ob1, ob2, space = 1) => {
   return iter(ob1, ob2, 0, space);  
 };
 
- 
-
 const genDiff = (filepath1, filepath2) => {
   const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
   const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
@@ -116,8 +111,8 @@ const genDiff = (filepath1, filepath2) => {
   const objFix = Object.entries(objJs).sort();
   const obj2Fix = Object.entries(obj2Js).sort();
 
-  const comparison = stringify(objJs, obj2Js, 4);
-  return comparison + '\n}';
+  const stylish = stringify(objJs, obj2Js, 4);
+  return stylish + '\n}';
 };
 
 module.exports = { genDiff, withoutСomparison, stringify, getValueObject, getValue};

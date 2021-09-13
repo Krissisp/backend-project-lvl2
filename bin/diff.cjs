@@ -1,5 +1,5 @@
-
-const genDiff = require('../src/gendiff.cjs');
+#!/usr/bin/env node
+const  { genDiff, createDiff, withOutComparison }  = require('../src/withArray.cjs');
 
 
 const { program } = require('commander');
@@ -9,6 +9,6 @@ program
 .description('Compares two configuration files and shows a difference')
 .argument('<filepath1>', 'path to file1')
 .argument('<filepath2>', 'path to file2')
-.option('-f, --format [type]', 'output format')
+.option('-f, --format [type]', 'output format', 'stylish')
 .action((filepath1, filepath2) => genDiff(filepath1, filepath2));
 program.parse(process.argv);

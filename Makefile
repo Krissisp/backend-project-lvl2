@@ -1,4 +1,4 @@
 gendiff:
-	node __fixtures__/expected.file.cjs
+	node bin/diff.cjs
 lint: 
 	npx eslint ..
