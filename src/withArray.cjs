@@ -2,6 +2,7 @@ const { parsersYml } = require('./parsers.cjs');
 const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
+const {formatChoice} = require('./formaters/index')
 
 const withOutComparison = (arr) => {
     let predresult = [];
@@ -60,49 +61,27 @@ const createDiff = (object1, object2) => {
         return acc;
      }, [])
     
-}
+};
 
-const stylish = (value, replacer = ' ', space = 1) => {
-    const iter = (array, depth) => {
-     let result = '{';
-
-       for(const element of array) {
-        const indent = element[0].length + replacer.length
-           result += '\n'+ replacer.repeat(space * depth - indent) + `${element[0]} ${element[1]}: `
-          if(!Array.isArray(element[2])) {
-            result += `${element[2]}`; 
-          } 
-          if(Array.isArray(element[2])) {
-            result += iter(element[2], depth + 1);
-          }
-        }
-   
-     result += '\n' + replacer.repeat(space * (depth - 1)) + '}';
-     return result;
+   const genDiff = (filepath1, filepath2, formatName) => {
+    const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
+    const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
+    const obj = readFile(filepath1);
+    const obj2 = readFile(filepath2);
+    let objJs;
+    let obj2Js;
+    if (path.extname(filepath1) === 'json' && path.extname(filepath2) === 'json'){
+      objJs = JSON.parse(obj);
+      obj2Js = JSON.parse(obj2);
     }
-     return iter(value, 1)
-   };
-   
-   const genDiff = (filepath1, filepath2) => {
-       const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
-       const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
-       const obj = readFile(filepath1);
-       const obj2 = readFile(filepath2);
-       let objJs;
-       let obj2Js;
-       if (path.extname(filepath1) === 'json' && path.extname(filepath2) === 'json'){
-          objJs = JSON.parse(obj);
-          obj2Js = JSON.parse(obj2);
-       }
      
-       if (path.extname(filepath1) !== 'json' && path.extname(filepath2) !== 'json'){
-          objJs = parsersYml(obj);
-          obj2Js = parsersYml(obj2);
-       }
-     
-       const diffObject = createDiff(objJs, obj2Js);
-       return stylish(diffObject, ' ', 4);
+    if (path.extname(filepath1) !== 'json' && path.extname(filepath2) !== 'json'){
+      objJs = parsersYml(obj);
+      obj2Js = parsersYml(obj2);
+    }
+    const diffObject = createDiff(objJs, obj2Js);
+  return formatChoice(formatName, diffObject)
        
-     };
+};
      
-     module.exports = { genDiff, createDiff, withOutComparison };
+     module.exports = { genDiff, createDiff, withOutComparison}

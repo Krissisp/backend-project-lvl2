@@ -1,4 +1,4 @@
-const { parsersYml } = require('./parsers.js');
+const { parsersYml } = require('./parsers.cjs');
 const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
@@ -24,18 +24,22 @@ const createDiff = (object1, object2) => {
     return mergeObjectSort.reduce((acc, keyValue ) => { 
         if(!_.has(object1, `${keyValue[0]}`) && _.has(object2, `${keyValue[0]}`)) {
           if(typeof(object2[keyValue[0]]) !== 'object') {
-            acc['+ ' + keyValue[0]] = object2[keyValue[0]];
+            acc[keyValue[0]] = object2[keyValue[0]];
+            acc.diff = '+';
           } 
           if(typeof(object2[keyValue[0]]) === 'object') {
-            acc['+ ' + keyValue[0]] = withOutComparison(object2[keyValue[0]])
+            acc[keyValue[0]] = withOutComparison(object2[keyValue[0]])
+            acc.diff = '+';
           }
         }
         if(_.has(object1, `${keyValue[0]}`) && !_.has(object2, `${keyValue[0]}`)) {
           if(typeof(object1[keyValue[0]]) !== 'object') {
-            acc['- ' + keyValue[0]] = object1[keyValue[0]];
+            acc[keyValue[0]] = object1[keyValue[0]];
+            acc.diff = '-';
           } 
           if(typeof(object1[keyValue[0]]) === 'object') {
-            acc['- ' + keyValue[0]] = withOutComparison(object1[keyValue[0]])
+            acc[keyValue[0]] = withOutComparison(object1[keyValue[0]])
+            acc.diff = '-';
           }
         }
         if(_.has(object1, `${keyValue[0]}`) && _.has(object2, `${keyValue[0]}`)) {
@@ -85,7 +89,31 @@ const stylish = (value, replacer = ' ', space = 1) => {
   return iter(value, space)
 };
 
-const genDiff = (filepath1, filepath2) => {
+const plain = (objDiff) => {
+  let result = '';
+  const iter = (obj, ansentry) => {
+    for(const element in obj) {
+      console.log('hghhb', element.substring(2))
+      if(typeof(obj[element]) !== 'object') {
+        if(element.startsWith('-')) {
+          if(_.has(obj[element], `+ ${element.substring(2)}`)) {
+            result += `Property ${ansentry} was updated. From ${obj[element]} to ${obj[`+ ${element.substring(2)}`]}`
+          } else {
+            result += `Property ${ansentry} was removed`
+          }
+        }
+        if(element.startsWith('+')) {
+          result += `Property ${ansentry} was added with value: ${obj[element]}`
+        }
+      } else {
+
+      }
+    }
+    return result
+  }
+  return iter(objDiff, '')
+}
+const genDiff = (filepath1, filepath2, formatName) => {
     const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
     const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
     const obj = readFile(filepath1);
@@ -105,6 +133,10 @@ const genDiff = (filepath1, filepath2) => {
     const obj2Fix = Object.entries(obj2Js).sort();
   
     const diffObject = createDiff(objJs, obj2Js);
+    //console.log('diffObject', diffObject)
+    if(formatName === 'plain') {
+      return plain(diffObject);
+    }
     return stylish(diffObject, ' ', 2);
     
   };
