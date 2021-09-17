@@ -1,98 +1,77 @@
-const { parsersYml } = require('./parsers.js');
+const { parsersYml } = require('./parsers.cjs');
 const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
+const {formatChoice} = require('./formaters/index')
 
-const withoutСomparison = (ob, h = 1, space) => {
-  let predRes = '{';
-  for(const podOb in ob) {
-    if(typeof(ob[podOb]) !== 'object') {
-      predRes += '\n' + ' '.repeat(h * space + 4) + `${podOb}: ${ob[podOb]}`;
-    } else {
-      predRes += '\n' + ' '.repeat(h * space + 4) + `${podOb}: `;
-      predRes += withoutСomparison(ob[podOb], h + 1, space);
+const withOutComparison = (arr) => {
+  let predresult = [];
+  for(const element in arr) {
+    if(typeof(arr[element]) !== 'object') {
+      predresult.push([' ', element, arr[element]]);
+    }
+    if(typeof(arr[element]) === 'object') {
+      predresult.push([' ', element, withOutComparison(arr[element])]);
     }
   }
-  predRes += '\n' + ' '.repeat(space * h) + '}'
-  return predRes;
-};
-
-const getOperator = (ob, ob1, key) => {
-  if(_.has(ob, `${key}`) && _.has(ob1, `${key}`)) {
-    return ' ';
-  }
-  if(!_.has(ob, `${key}`) && _.has(ob1, `${key}`)) {
-    return '+';
-  } 
-  return '-';
-};
-
-const getValue = (ob, ob1, key) => {
-
-  if(!_.has(ob, `${key}`) && _.has(ob1, `${key}`)) {
-     return `${ob1[key]}`; 
-  } 
-  if(_.has(ob, `${key}`) && !_.has(ob1, `${key}`)) {
-    return `${ob[key]}`; 
-  }
- 
-  return `${ob[key]}`; 
-};
-
-const getValueObject = (ob, ob1, key, depth = 1,  space = 1) => {
-  if(_.has(ob, `${key}`) && _.has(ob1, `${key}`)) { 
-    return  iter(ob[key], ob1[key], depth + 1, space) + '\n' + ' '.repeat(space * (depth +1)) + '}';
-  }
-  if(!_.has(ob, `${key}`) && _.has(ob1, `${key}` )) {
-    return withoutСomparison(ob1[key], depth + 1, space);
-  }
-  if(_.has(ob, `${key}`) && !_.has(ob1, `${key}` )) {
-    return withoutСomparison(ob[key], depth + 1, space);
-  } 
+  return predresult
 }
 
-const iter = (value1, value2, depth = 0, space)  => {
-  const mergeObject = {...value1, ...value2};
-  const mergeObjectSort = Object.entries(mergeObject).sort()
-  return mergeObjectSort.reduce((acc, element) =>{
-    const operator = getOperator(value1, value2, element[0]);
-    
-    if(typeof(element[1]) === 'object') {
-      acc += `\n ${' '.repeat(space * depth)} ${operator} ${element[0]}: `
-      acc += getValueObject(value1, value2, element[0], depth, space);
-    } else {
-      
-    if(_.has(value1, `${element[0]}`) && _.has(value2, `${element[0]}`) && value1[element[0]] !== value2[element[0]]) {
-      if(typeof(value1[element[0]]) === 'object' && typeof(value2[element[0]]) !== 'object') {
-        acc += `\n ${' '.repeat(space * depth)} - ${element[0]}: ${withoutСomparison(value1[element[0]], depth + 1, space)}`
-        acc += `\n ${' '.repeat(space * depth)} + ${element[0]}: ${value2[element[0]]}`
-      }
-      if(typeof(value1[element[0]]) !== 'object' && typeof(value2[element[0]]) === 'object') {
-        acc += `\n ${' '.repeat(space * depth)} - ${element[0]}: ${value1[element[0]]}`
-        acc += `\n ${' '.repeat(space * depth)} + ${element[0]}: ${withoutСomparison(value2[element[0]], depth + 1, space)}`
-      } 
-      if(typeof(value1[element[0]]) !== 'object' && typeof(value2[element[0]]) !== 'object') {
-        acc += `\n ${' '.repeat(space * depth)} - ${element[0]}: ${value1[element[0]]}`
-        acc += `\n ${' '.repeat(space * depth)} + ${element[0]}: ${value2[element[0]]}`
-      }
-    } 
-    
-    else {
-      acc += `\n ${' '.repeat(space * depth)} ${operator} ${element[0]}: `
-      acc += getValue(value1, value2, element[0]);
-    }
-    
+const isObject = (value) => {
+  if (typeof value !== 'object') {
+    return false
   }
-    return acc;
-  }, '{')
+  if (value === null) {
+    return false
+  }
+  return true
+}
+
+const createDiff = (object1, object2) => {
+  const mergeObject = {...object1, ...object2};
+  const mergeObjectSort = Object.entries(mergeObject).sort();
+  return mergeObjectSort.reduce((acc, keyValue ) => { 
+    if(!_.has(object1, `${keyValue[0]}`) && _.has(object2, `${keyValue[0]}`)) {
+      if(!isObject(object2[keyValue[0]])) {
+        acc.push(['+', keyValue[0], object2[keyValue[0]]]);
+      } 
+      if(isObject(object2[keyValue[0]])) {
+        acc.push(['+', keyValue[0], withOutComparison(object2[keyValue[0]])])
+      }
+    }
+    if(_.has(object1, `${keyValue[0]}`) && !_.has(object2, `${keyValue[0]}`)) {
+      if(!isObject(object1[keyValue[0]])) {
+        acc.push(['-', keyValue[0], object1[keyValue[0]]]);
+      } 
+      if(isObject(object1[keyValue[0]])) {
+        acc.push(['-', keyValue[0], withOutComparison(object1[keyValue[0]])])
+      }
+    }
+    if(_.has(object1, `${keyValue[0]}`) && _.has(object2, `${keyValue[0]}`)) {
+      if(!isObject(object1[keyValue[0]]) && !isObject(object2[keyValue[0]]) && object2[keyValue[0]] !== object1[keyValue[0]]) {
+        acc.push(['-', keyValue[0], object1[keyValue[0]]]);
+        acc.push(['+', keyValue[0], object2[keyValue[0]]]);
+      }
+      if(!isObject(object1[keyValue[0]])&& !isObject(object2[keyValue[0]]) && object2[keyValue[0]] === object1[keyValue[0]]) {
+        acc.push([' ', keyValue[0], object1[keyValue[0]]]);
+      }
+      if(isObject(object1[keyValue[0]])&& !isObject(object2[keyValue[0]])) {
+        acc.push(['-', keyValue[0], withOutComparison(object1[keyValue[0]])]);
+        acc.push(['+', keyValue[0], object2[keyValue[0]]]);
+      }
+      if(!isObject(object1[keyValue[0]])&& isObject(object2[keyValue[0]])) {
+        acc.push(['-', keyValue[0], object1[keyValue[0]]]);
+        acc.push(['+', keyValue[0], withOutComparison(object2[keyValue[0]])]);
+      }
+      if(isObject(object1[keyValue[0]])&& isObject(object2[keyValue[0]])) {
+        acc.push([' ', keyValue[0], createDiff(object1[keyValue[0]], object2[keyValue[0]])]);
+      }  
+    }
+  return acc;
+  }, [])
 };
 
-const stringify = (ob1, ob2, space = 1) => {
-  
-  return iter(ob1, ob2, 0, space);  
-};
-
-const genDiff = (filepath1, filepath2) => {
+const genDiff = (filepath1, filepath2, formatName = 'stylish') => {
   const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
   const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
   const obj = readFile(filepath1);
@@ -100,19 +79,16 @@ const genDiff = (filepath1, filepath2) => {
   let objJs;
   let obj2Js;
   if (path.extname(filepath1) === 'json' && path.extname(filepath2) === 'json'){
-     objJs = JSON.parse(obj);
-     obj2Js = JSON.parse(obj2);
+    objJs = JSON.parse(obj);
+    obj2Js = JSON.parse(obj2);
   }
-
+     
   if (path.extname(filepath1) !== 'json' && path.extname(filepath2) !== 'json'){
-     objJs = parsersYml(obj);
-     obj2Js = parsersYml(obj2);
+    objJs = parsersYml(obj);
+    obj2Js = parsersYml(obj2);
   }
-  const objFix = Object.entries(objJs).sort();
-  const obj2Fix = Object.entries(obj2Js).sort();
-
-  const stylish = stringify(objJs, obj2Js, 4);
-  return stylish + '\n}';
+  const diffArray = createDiff(objJs, obj2Js);
+  return formatChoice(formatName, diffArray);   
 };
-
-module.exports = { genDiff, withoutСomparison, stringify, getValueObject, getValue};
+     
+module.exports = { genDiff, createDiff, withOutComparison}

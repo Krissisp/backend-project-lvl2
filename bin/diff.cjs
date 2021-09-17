@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const  { genDiff, createDiff, withOutComparison }  = require('../src/withArray.cjs');
+const  { genDiff, createDiff, withOutComparison }  = require('../src/gendiff.cjs');
 
 
 const { program } = require('commander');

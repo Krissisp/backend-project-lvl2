@@ -1,0 +1,15 @@
+const _ = require('lodash');
+
+const json = (array) => {
+    return array.reduce((acc, element) => {
+        if(Array.isArray(element[2])) {
+            acc[element[0] + ' ' + element[1]] = json(element[2]);
+        }
+        if(!Array.isArray(element[2])) {
+                acc[element[0] + ' ' + element[1]] = element[2];
+        }
+        return acc;
+    }, {})
+};
+
+module.exports = { json };
