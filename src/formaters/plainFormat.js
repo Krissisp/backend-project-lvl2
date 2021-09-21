@@ -1,47 +1,49 @@
+import _ from 'lodash';
+
 const plain = (value) => {
-    let result = '';
-    const iter = (array, ansentry) => {
-      array.push([])
-      for(let i = 0; i < array.length -1; i++) {
-        if(array[i][1] === array[i + 1][1]) {
-          result += `\nProperty '${[...ansentry, array[i][1]].join('.')}' was updated. `
-          if(typeof(array[i][2]) === 'boolean') {
-            result += `From ${array[i][2]} to ${array[i + 1][2]}`
-          } else {
-            if(Array.isArray(array[i][2])) {
-            result += `From [complex value] to '${array[i + 1][2]}'`
-            } else {
-              result += `From '${array[i][2]}' to '${array[i + 1][2]}'`
-            }
-          }
-          i += 2;
-        }
-        if(array[i][0] === '-') {
-          result += `\nProperty '${[...ansentry, array[i][1]].join('.')}' was removed`
-        }
-        else if(array[i][0] === '+') {
-          if(Array.isArray(array[i][2])){
-            result += `\nProperty '${[...ansentry, array[i][1]].join('.')}' was added with value: [complex value]`
-          } else {
-          result += `\nProperty '${[...ansentry, array[i][1]].join('.')}' was added with value: `
-          if(typeof(array[i][2]) ==='boolean') {
-            result += `${array[i][2]}`
-          } else {
-            result += `'${array[i][2]}'`
-          }
-          }
+  const iter = (array, ansentry) => {
+    console.log('array', array);
+    const result = array.reduce((acc, element, index) => {
+      const desiredElement = element[1];
+      const valueElement = element[2];
+      const firstIndexElement1 = _.indexOf(array.flat(1), desiredElement, 0);
+      const lastIndexElement1 = _.indexOf(array.flat(1), desiredElement, firstIndexElement1 + 1);
+      if (lastIndexElement1 !== -1) {
+        acc += `\nProperty '${[...ansentry, desiredElement].join('.')}' was updated. `;
+        if (typeof (valueElement) === 'boolean') {
+          acc += `From ${valueElement} to ${array.flat(1)[lastIndexElement1 + 1]}`;
+        } else if (Array.isArray(valueElement)) {
+          acc += `From [complex value] to '${array.flat(1)[lastIndexElement1 + 1]}'`;
         } else {
-          if(Array.isArray(array[i][2])) {
-            if(array[i][2].length >= 2) {
-              iter(array[i][2], [...ansentry, array[i][1]])
-            } else {
-              result += `\nProperty '${[...ansentry, array[i][1]].join('.')}' was added with value: [complex value]`
-            }
-          } 
+          acc += `From '${valueElement}' to '${array.flat(1)[lastIndexElement1 + 1]}'`;
+        }
+        array.splice(index + 1, 1);
+      } else if (element[0] === '-') {
+        acc += `\nProperty '${[...ansentry, element[1]].join('.')}' was removed`;
+      } else if (element[0] === '+') {
+        if (Array.isArray(element[2])) {
+          acc += `\nProperty '${[...ansentry, element[1]].join('.')}' was added with value: [complex value]`;
+        } else {
+          acc += `\nProperty '${[...ansentry, element[1]].join('.')}' was added with value: `;
+          if (typeof (element[2]) === 'boolean') {
+            acc += `${element[2]}`;
+          } else {
+            acc += `'${element[2]}'`;
+          }
+        }
+      } else if (Array.isArray(element[2])) {
+        if (element[2].length >= 2) {
+          acc += `\n${iter(element[2], [...ansentry, element[1]])}`;
+        } else {
+          acc += `\nProperty '${[...ansentry, element[1]].join('.')}' was added with value: [complex value]`;
         }
       }
-      return result.trim()
-    }
-        return iter(value, []);
+      return acc;
+    }, '');
+
+    return result.trim();
+  };
+  return iter(value, []);
 };
-module.exports = {plain};
+
+export default plain;

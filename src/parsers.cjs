@@ -1,5 +1,5 @@
-const yaml = require('js-yaml');
+import yaml from 'js-yaml';
 
 const parsersYml = (file) => yaml.load(file);
 
-module.exports = { parsersYml };
+export default parsersYml;

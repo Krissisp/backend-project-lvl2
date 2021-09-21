@@ -8,13 +8,14 @@ extends:
   - airbnb-base
   - eslint:recommended
   - plugin:jest/recommended
+  - plugin:import/errors
+  - plugin:import/warnings
 parserOptions:
   ecmaVersion: 2020
   sourceType: module
 rules: {
-  no-multi-spaces: off,
-  no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }],
+  
   no-console: off,
-  javascript.validate.enable": off,
-  import/no-unused-modules: [error, {missingExports: false, unusedExports: true}]
+  import/extensions: 0,
+  no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }]
 }
