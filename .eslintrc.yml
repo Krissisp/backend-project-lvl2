@@ -17,5 +17,8 @@ rules: {
   
   no-console: off,
   import/extensions: 0,
-  no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }]
+  no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }],
+  no-param-reassign: 0,
+  prefer-destructuring: 0
+  
 }
