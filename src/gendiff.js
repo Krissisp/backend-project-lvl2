@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import _ from 'lodash';
-import parsersYml from './parsers.cjs';
+import parsersYml from './parsers.js';
 import formatChoice from './formaters/index';
 
 export const isObject = (value) => {
