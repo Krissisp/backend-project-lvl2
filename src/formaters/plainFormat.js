@@ -2,7 +2,6 @@ import _ from 'lodash';
 
 const plain = (value) => {
   const iter = (array, ansentry) => {
-    console.log('array', array);
     const result = array.reduce((acc, element, index) => {
       const desiredElement = element[1];
       const valueElement = element[2];
