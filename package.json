@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.2",
   "description": "",
-  "main": "../bin1/diff.js",
+  "main": "../bin2/diff.js",
   "scripts": {
     "test": "jest"
   },
@@ -16,7 +16,7 @@
     "lodash": "^4.17.21"
   },
   "bin": {
-    "gendiff": "bin1/diff.js"
+    "gendiff": "bin2/diff.js"
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.15.4",
