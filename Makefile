@@ -1,4 +1,4 @@
 gendiff:
-	node bin/diff.cjs
+	node bin/diff.js
 lint: 
 	npx eslint ..
