@@ -34,7 +34,12 @@ const plain = (value) => {
         if (Array.isArray(valueElement)
         && typeof (valueNexElement) !== 'boolean' && typeof (valueNexElement) !== 'number' && valueNexElement !== null) {
           acc += `From [complex value] to '${valueNexElement}'`;
-        } // else {
+        }
+        if (typeof (valueElement) !== 'boolean' && typeof (valueElement) !== 'number' && valueElement !== null && !Array.isArray(valueElement)
+        && typeof (valueNexElement) !== 'boolean' && valueNexElement !== null && typeof (valueNexElement) !== 'number' && !Array.isArray(valueNexElement)) {
+          acc += `From '${valueElement}' to '${valueNexElement}'`;
+        }
+        // else {
         // acc += `From '${valueElement}' to '${valueNexElement}'`;
         // }
         array.splice(index + 1, 1);
