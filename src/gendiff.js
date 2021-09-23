@@ -1,8 +1,12 @@
 import fs from 'fs';
-import path from 'path';
+import path, { dirname } from 'path';
 import _ from 'lodash';
+import { fileURLToPath } from 'url';
 import parsersYml from './parsers.js';
 import formatChoice from './formaters/index';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export const isObject = (value) => {
   if (typeof value !== 'object') {
