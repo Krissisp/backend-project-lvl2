@@ -79,7 +79,7 @@ export const createDiff = (object1, object2) => {
 
 const genDiff = (filepath1, filepath2, formatName = 'stylish') => {
   const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
-  const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
+  const readFile = (filename) => fs.readFileSync(filename, 'utf-8');
   const obj = readFile(filepath1);
   const obj2 = readFile(filepath2);
   let objJs;
