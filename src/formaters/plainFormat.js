@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _, { isNull } from 'lodash';
 
 const plain = (value) => {
   const iter = (array, ansentry) => {
@@ -10,30 +10,24 @@ const plain = (value) => {
       const valueNexElement = array.flat(1)[lastIndexElement1 + 1];
       if (lastIndexElement1 !== -1) {
         acc += `\nProperty '${[...ansentry, desiredElement].join('.')}' was updated. `;
-        if ((typeof (valueElement) === 'boolean' || typeof (valueElement) === 'number')) {
-          if ((typeof (valueNexElement) === 'boolean' || typeof (valueNexElement) === 'number')) {
-            acc += `From ${valueElement} to ${valueNexElement}`;
-          } if (Array.isArray(valueNexElement)) {
-            acc += `From ${valueElement} to [complex value]`;
-          } else {
-            acc += `From ${valueElement} to '${valueNexElement}'`;
-          }
-        } if (Array.isArray(valueElement)) {
-          if ((typeof (valueNexElement) === 'boolean' || typeof (valueNexElement) === 'number')) {
-            acc += `From [complex value] to ${valueNexElement}`;
-          } if (Array.isArray(valueNexElement)) {
-            acc += 'From [complex value] to [complex value]';
-          } else {
-            acc += `From [complex value] to '${valueNexElement}'`;
-          }
-        } if (!Array.isArray(valueElement)) {
-          if ((typeof (valueNexElement) === 'boolean' || typeof (valueNexElement) === 'number')) {
-            acc += `From '${valueElement}' to ${valueNexElement}`;
-          } if (Array.isArray(valueNexElement)) {
-            acc += `From '${valueElement}' to [complex value]`;
-          } else {
-            acc += `From '${valueElement}' to '${valueNexElement}'`;
-          }
+        if ((typeof (valueElement) === 'boolean' || typeof (valueElement) === 'number' || isNull(valueElement))
+        && Array.isArray(valueNexElement)) {
+          acc += `From ${valueElement} to [complex value]`;
+        }
+        if ((typeof (valueElement) === 'boolean' || typeof (valueElement) === 'number' || isNull(valueElement))
+        && !Array.isArray(valueNexElement) && typeof (valueNexElement) !== 'boolean' && !isNull(valueNexElement)) {
+          acc += `From ${valueElement} to '${valueNexElement}'`;
+        }
+
+        if (Array.isArray(valueElement)
+        && (typeof (valueNexElement) === 'boolean' || typeof (valueNexElement) === 'number' || isNull(valueNexElement))) {
+          acc += `From [complex value] to ${valueNexElement}`;
+        }
+        if (Array.isArray(valueElement)
+        && typeof (valueNexElement) !== 'boolean' && typeof (valueNexElement) !== 'number' && !isNull(valueNexElement)) {
+          acc += `From [complex value] to '${valueNexElement}'`;
+        } else {
+          acc += `From '${valueElement}' to '${valueNexElement}'`;
         }
         array.splice(index + 1, 1);
       } else if (element[0] === '-') {
