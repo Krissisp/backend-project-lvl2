@@ -7,14 +7,27 @@ const plain = (value) => {
       const valueElement = element[2];
       const firstIndexElement1 = _.indexOf(array.flat(1), desiredElement, 0);
       const lastIndexElement1 = _.indexOf(array.flat(1), desiredElement, firstIndexElement1 + 1);
+      const valueNexElement = array.flat(1)[lastIndexElement1 + 1];
       if (lastIndexElement1 !== -1) {
         acc += `\nProperty '${[...ansentry, desiredElement].join('.')}' was updated. `;
-        if (typeof (valueElement) === 'boolean') {
-          acc += `From ${valueElement} to ${array.flat(1)[lastIndexElement1 + 1]}`;
-        } else if (Array.isArray(valueElement)) {
-          acc += `From [complex value] to '${array.flat(1)[lastIndexElement1 + 1]}'`;
-        } else {
-          acc += `From '${valueElement}' to '${array.flat(1)[lastIndexElement1 + 1]}'`;
+        if ((typeof (valueElement) === 'boolean' || typeof (valueElement) === 'number')) {
+          if ((typeof (valueNexElement) === 'boolean' || typeof (valueNexElement) === 'number')) {
+            acc += `From ${valueElement} to ${valueNexElement}`;
+          } else {
+            acc += `From ${valueElement} to [complex value]`;
+          }
+        } if (Array.isArray(valueElement)) {
+          if ((typeof (valueNexElement) === 'boolean' || typeof (valueNexElement) === 'number')) {
+            acc += `From [complex value] to ${valueNexElement}`;
+          } else {
+            acc += 'From [complex value] to [complex value]';
+          }
+        } if (!Array.isArray(valueElement)) {
+          if ((typeof (valueNexElement) === 'boolean' || typeof (valueNexElement) === 'number')) {
+            acc += `From '${valueElement}' to ${valueNexElement}`;
+          } else {
+            acc += `From '${valueElement}' to [complex value]`;
+          }
         }
         array.splice(index + 1, 1);
       } else if (element[0] === '-') {
