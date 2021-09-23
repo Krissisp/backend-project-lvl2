@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.2",
   "description": "",
-  "main": "./bin/gendiff.js",
+  "main": "./src/gendiff.js",
   "scripts": {
     "test": "jest"
   },
