@@ -10,21 +10,21 @@ const plain = (value) => {
       const valueNexElement = array.flat(1)[lastIndexElement1 + 1];
       if (lastIndexElement1 !== -1) {
         acc += `\nProperty '${[...ansentry, desiredElement].join('.')}' was updated. `;
-        if ((typeof (valueElement) === 'boolean' || typeof (valueElement) === 'number' || isNull(valueElement))
+        if ((typeof (valueElement) === 'boolean' || typeof (valueElement) === 'number' || _.isNull(valueElement))
         && Array.isArray(valueNexElement)) {
           acc += `From ${valueElement} to [complex value]`;
         }
-        if ((typeof (valueElement) === 'boolean' || typeof (valueElement) === 'number' || isNull(valueElement))
-        && !Array.isArray(valueNexElement) && typeof (valueNexElement) !== 'boolean' && !isNull(valueNexElement)) {
+        if ((typeof (valueElement) === 'boolean' || typeof (valueElement) === 'number' || _.isNull(valueElement))
+        && !Array.isArray(valueNexElement) && typeof (valueNexElement) !== 'boolean' && !_.isNull(valueNexElement)) {
           acc += `From ${valueElement} to '${valueNexElement}'`;
         }
 
         if (Array.isArray(valueElement)
-        && (typeof (valueNexElement) === 'boolean' || typeof (valueNexElement) === 'number' || isNull(valueNexElement))) {
+        && (typeof (valueNexElement) === 'boolean' || typeof (valueNexElement) === 'number' || _.isNull(valueNexElement))) {
           acc += `From [complex value] to ${valueNexElement}`;
         }
         if (Array.isArray(valueElement)
-        && typeof (valueNexElement) !== 'boolean' && typeof (valueNexElement) !== 'number' && !isNull(valueNexElement)) {
+        && typeof (valueNexElement) !== 'boolean' && typeof (valueNexElement) !== 'number' && !_.isNull(valueNexElement)) {
           acc += `From [complex value] to '${valueNexElement}'`;
         } else {
           acc += `From '${valueElement}' to '${valueNexElement}'`;
