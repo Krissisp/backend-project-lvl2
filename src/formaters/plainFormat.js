@@ -1,4 +1,4 @@
-import _, { isArrayLikeObject } from 'lodash';
+import _ from 'lodash';
 
 const plain = (value) => {
   const iter = (array, ansentry) => {
