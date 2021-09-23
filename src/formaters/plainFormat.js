@@ -13,20 +13,26 @@ const plain = (value) => {
         if ((typeof (valueElement) === 'boolean' || typeof (valueElement) === 'number')) {
           if ((typeof (valueNexElement) === 'boolean' || typeof (valueNexElement) === 'number')) {
             acc += `From ${valueElement} to ${valueNexElement}`;
-          } else {
+          } if (Array.isArray(valueNexElement)) {
             acc += `From ${valueElement} to [complex value]`;
+          } else {
+            acc += `From ${valueElement} to '${valueNexElement}'`;
           }
         } if (Array.isArray(valueElement)) {
           if ((typeof (valueNexElement) === 'boolean' || typeof (valueNexElement) === 'number')) {
             acc += `From [complex value] to ${valueNexElement}`;
-          } else {
+          } if (Array.isArray(valueNexElement)) {
             acc += 'From [complex value] to [complex value]';
+          } else {
+            acc += `From [complex value] to '${valueNexElement}'`;
           }
         } if (!Array.isArray(valueElement)) {
           if ((typeof (valueNexElement) === 'boolean' || typeof (valueNexElement) === 'number')) {
             acc += `From '${valueElement}' to ${valueNexElement}`;
-          } else {
+          } if (Array.isArray(valueNexElement)) {
             acc += `From '${valueElement}' to [complex value]`;
+          } else {
+            acc += `From '${valueElement}' to '${valueNexElement}'`;
           }
         }
         array.splice(index + 1, 1);
