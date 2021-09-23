@@ -26,9 +26,9 @@ const plain = (value) => {
         if (Array.isArray(valueElement)
         && typeof (valueNexElement) !== 'boolean' && typeof (valueNexElement) !== 'number' && valueNexElement !== null) {
           acc += `From [complex value] to '${valueNexElement}'`;
-        } else {
-          acc += `From '${valueElement}' to '${valueNexElement}'`;
-        }
+        } // else {
+        // acc += `From '${valueElement}' to '${valueNexElement}'`;
+        // }
         array.splice(index + 1, 1);
       } else if (element[0] === '-') {
         acc += `\nProperty '${[...ansentry, element[1]].join('.')}' was removed`;
