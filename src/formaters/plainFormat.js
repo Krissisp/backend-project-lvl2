@@ -1,4 +1,4 @@
-import _, { isNull } from 'lodash';
+import _ from 'lodash';
 
 const plain = (value) => {
   const iter = (array, ansentry) => {
@@ -10,21 +10,21 @@ const plain = (value) => {
       const valueNexElement = array.flat(1)[lastIndexElement1 + 1];
       if (lastIndexElement1 !== -1) {
         acc += `\nProperty '${[...ansentry, desiredElement].join('.')}' was updated. `;
-        if ((typeof (valueElement) === 'boolean' || typeof (valueElement) === 'number' || _.isNull(valueElement))
+        if ((typeof (valueElement) === 'boolean' || typeof (valueElement) === 'number' || valueElement === null)
         && Array.isArray(valueNexElement)) {
           acc += `From ${valueElement} to [complex value]`;
         }
-        if ((typeof (valueElement) === 'boolean' || typeof (valueElement) === 'number' || _.isNull(valueElement))
-        && !Array.isArray(valueNexElement) && typeof (valueNexElement) !== 'boolean' && !_.isNull(valueNexElement)) {
+        if ((typeof (valueElement) === 'boolean' || typeof (valueElement) === 'number' || valueElement === null)
+        && !Array.isArray(valueNexElement) && typeof (valueNexElement) !== 'boolean' && valueNexElement !== null) {
           acc += `From ${valueElement} to '${valueNexElement}'`;
         }
 
         if (Array.isArray(valueElement)
-        && (typeof (valueNexElement) === 'boolean' || typeof (valueNexElement) === 'number' || _.isNull(valueNexElement))) {
+        && (typeof (valueNexElement) === 'boolean' || typeof (valueNexElement) === 'number' || valueNexElement === null)) {
           acc += `From [complex value] to ${valueNexElement}`;
         }
         if (Array.isArray(valueElement)
-        && typeof (valueNexElement) !== 'boolean' && typeof (valueNexElement) !== 'number' && !_.isNull(valueNexElement)) {
+        && typeof (valueNexElement) !== 'boolean' && typeof (valueNexElement) !== 'number' && valueNexElement !== null) {
           acc += `From [complex value] to '${valueNexElement}'`;
         } else {
           acc += `From '${valueElement}' to '${valueNexElement}'`;
