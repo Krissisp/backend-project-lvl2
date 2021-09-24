@@ -16,7 +16,7 @@
     "lodash": "^4.17.21"
   },
   "bin": {
-    "gendiff": "gendiff.cjs"
+    "gendiff": "gendiff.js"
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.15.4",
