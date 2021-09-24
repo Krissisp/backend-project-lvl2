@@ -12,4 +12,4 @@ program
   .argument('<formatName>', 'display format')
   .action((filepath1, filepath2, formatName) => genDiff(filepath1, filepath2, formatName));
 
-console.log(process.argv);
+program.parse(process.argv);

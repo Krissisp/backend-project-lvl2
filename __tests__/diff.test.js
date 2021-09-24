@@ -2,7 +2,7 @@ import { expect, it } from '@jest/globals';
 import fs from 'fs';
 import path from 'path';
 import { comparisonNested, mergeFormat } from '../__fixtures__/expect';
-import genDiff from '../src/gendiff';
+import genDiff from '../src/gendiff1';
 
 it('test genDiff format stylish', () => {
   expect(genDiff('file1.yaml', 'file2.yml', 'stylish')).toEqual(comparisonNested);
