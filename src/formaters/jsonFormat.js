@@ -6,7 +6,7 @@ const json = (array) => array.reduce((acc, element) => {
     // const key = `${element[0]} ${element[1]}`;
     acc[`${element[0]} ${element[1]}`] = element[2];
   }
-  return JSON.stringify(acc);
+  return acc;
 }, {});
 
-export default json;
+export default JSON.stringify(json());
