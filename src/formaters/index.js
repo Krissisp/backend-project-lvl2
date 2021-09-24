@@ -9,7 +9,7 @@ const formatChoice = (str, object) => {
   if (str === 'stylish') {
     return stylish(object, ' ', 4);
   }
-  return json(object);
+  return JSON.stringify(json(object));
 };
 
 export default formatChoice;

@@ -9,4 +9,4 @@ const json = (array) => array.reduce((acc, element) => {
   return acc;
 }, {});
 
-export default JSON.stringify(json());
+export default json;
