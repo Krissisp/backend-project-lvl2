@@ -20,5 +20,5 @@ it('test genDiff format json', () => {
     const result = JSON.parse(obj);
     return result;
   };
-  expect(JSON.stringify(genDiff('file1.yaml', 'file2.yml', 'json'))).toEqual(read('expected.json'));
+  expect(genDiff('file1.yaml', 'file2.yml', 'json')).toEqual(read('expected.json'));
 });
