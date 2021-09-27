@@ -1,4 +1,4 @@
-const stylish = (value, replacer = ' ', space = 1) => {
+export const stylish = (value, replacer = ' ', space = 1) => {
   const iter = (array, depth) => {
     const result = array.reduce((acc, element) => {
       const indent = element[0].length + replacer.length;
@@ -16,5 +16,3 @@ const stylish = (value, replacer = ' ', space = 1) => {
   };
   return `${iter(value, 1)}\n}`;
 };
-
-export default stylish;

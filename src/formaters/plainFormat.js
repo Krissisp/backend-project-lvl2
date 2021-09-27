@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const plain = (value) => {
+export const plain = (value) => {
   const iter = (array, ansentry) => {
     const result = array.reduce((acc, element, index) => {
       const desiredElement = element[1];
@@ -70,5 +70,3 @@ const plain = (value) => {
   };
   return iter(value, []);
 };
-
-export default plain;

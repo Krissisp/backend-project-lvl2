@@ -1,4 +1,4 @@
-const json = (array) => array.reduce((acc, element) => {
+export const json = (array) => array.reduce((acc, element) => {
   if (Array.isArray(element[2])) {
     acc[`${element[0]} ${element[1]}`] = json(element[2]);
   }
@@ -8,5 +8,3 @@ const json = (array) => array.reduce((acc, element) => {
   }
   return acc;
 }, {});
-
-export default json;

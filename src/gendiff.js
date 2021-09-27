@@ -3,7 +3,7 @@ import path from 'path';
 import _ from 'lodash';
 // import { fileURLToPath } from 'url';
 import parsersYml from './parsers.js';
-import formatChoice from './formaters/index';
+import { formatChoice } from './formaters/index.js';
 
 // const __filename = fileURLToPath(import.meta.url);
 // const __dirname = dirname(__filename);
@@ -77,7 +77,7 @@ export const createDiff = (object1, object2) => {
   }, []);
 };
 
-const genDiff = (filepath1, filepath2, formatName = 'stylish') => {
+export const genDiff = (filepath1, filepath2, formatName = 'stylish') => {
   // const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
   const readFile = (filename) => fs.readFileSync(filename, 'utf-8');
   const obj = readFile(filepath1);
@@ -96,5 +96,3 @@ const genDiff = (filepath1, filepath2, formatName = 'stylish') => {
   const diffArray = createDiff(objJs, obj2Js);
   return formatChoice(formatName, diffArray);
 };
-
-export default genDiff;

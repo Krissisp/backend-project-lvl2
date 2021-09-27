@@ -1,8 +1,8 @@
-import plain from './plainFormat';
-import stylish from './stylishFormat';
-import json from './jsonFormat';
+import { plain } from './plainFormat.js';
+import { stylish } from './stylishFormat.js';
+import { json } from './jsonFormat.js';
 
-const formatChoice = (str, object) => {
+export const formatChoice = (str, object) => {
   if (str === 'plain') {
     return plain(object);
   }
@@ -11,5 +11,3 @@ const formatChoice = (str, object) => {
   }
   return JSON.stringify(json(object));
 };
-
-export default formatChoice;
