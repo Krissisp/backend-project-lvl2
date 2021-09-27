@@ -15,9 +15,7 @@
     "js-yaml": "^3.14.1",
     "lodash": "^4.17.21"
   },
-  "bin": {
-    "gendiff": "./bin/gendiff.js"
-  },
+  "bin":  "./bin/gendiff.js",
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.15.4",
     "@jest/globals": "^27.0.6",
