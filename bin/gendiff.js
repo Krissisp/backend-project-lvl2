@@ -9,6 +9,7 @@ program
   .argument('<filepath1>', 'path to file1')
   .argument('<filepath2>', 'path to file2')
   .option('-f --format <type>', 'output format', 'stylish')
+  .option('-c --colors', 'hhjkjhjk')
   .action((filepath1, filepath2) => {
     const option = program.opts();
     const format = option.format;
