@@ -20,4 +20,3 @@ program
       console.log(genDiff(filepath1, filepath2, 'json'));
     }
   });
-program.parse(process.argv);
