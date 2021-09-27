@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import program from 'commander';
-import { genDiff } from '../src/gendiff.js';
+import { program } from 'commander';
+import { genDiff } from '../src/diff.js';
 
 program
   .command('gendiff')
@@ -9,6 +9,16 @@ program
   .argument('<filepath1>', 'path to file1')
   .argument('<filepath2>', 'path to file2')
   .option('-f --format <type>', 'output format', 'stylish')
-  .action((filepath1, filepath2, formatName) => genDiff(filepath1, filepath2, formatName));
-
+  .action((filepath1, filepath2) => {
+    const option = program.opts();
+    const format = option.format;
+    if (format === 'plain') {
+      console.log(genDiff(filepath1, filepath2, 'plain'));
+    }
+    if (format === 'json') {
+      console.log(genDiff(filepath1, filepath2, 'json'));
+    } else {
+      console.log(genDiff(filepath1, filepath2, 'stylish'));
+    }
+  });
 program.parse(process.argv);
