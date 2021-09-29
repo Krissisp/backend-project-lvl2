@@ -9,5 +9,5 @@ export default function formatChoice(str, object) {
   if (str === 'stylish') {
     return stylish(object, ' ', 4);
   }
-  return JSON.stringify(json(object));
+  return json(object);
 }
