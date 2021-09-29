@@ -3,7 +3,7 @@ import path from 'path';
 import _ from 'lodash';
 // import { fileURLToPath } from 'url';
 import parsersYml from './parsers.js';
-import { formatChoice } from './formaters/index.js';
+import formatChoice from './formaters/index.js';
 
 // const __filename = fileURLToPath(import.meta.url);
 // const __dirname = dirname(__filename);
@@ -19,7 +19,16 @@ export const isObject = (value) => {
 };
 
 export const withOutComparison = (object) => {
-  const arraySort = Object.entries(object).sort();
+  const array = _.entries(object);
+  const arraySort = _.sortBy(array, [function sort(a, b) {
+    if (a < b) {
+      return 1;
+    }
+    if (a > b) {
+      return -1;
+    }
+    return 0;
+  }]);
   return arraySort.reduce((acc, element) => {
     if (!isObject(element[1])) {
       acc.push([' ', element[0], element[1]]);
@@ -82,17 +91,10 @@ export const genDiff = (filepath1, filepath2, formatName = 'stylish') => {
   const readFile = (filename) => fs.readFileSync(filename, 'utf-8');
   const obj = readFile(filepath1);
   const obj2 = readFile(filepath2);
-  let objJs;
-  let obj2Js;
-  if (path.extname(filepath1) === 'json' && path.extname(filepath2) === 'json') {
-    objJs = JSON.parse(obj);
-    obj2Js = JSON.parse(obj2);
-  }
 
-  if (path.extname(filepath1) !== 'json' && path.extname(filepath2) !== 'json') {
-    objJs = parsersYml(obj);
-    obj2Js = parsersYml(obj2);
-  }
+  const objJs = path.extname(filepath1) === 'json' ? JSON.parse(obj) : parsersYml(obj);
+  const obj2Js = path.extname(filepath2) === 'json' ? JSON.parse(obj2) : parsersYml(obj2);
+
   const diffArray = createDiff(objJs, obj2Js);
   return formatChoice(formatName, diffArray);
 };
