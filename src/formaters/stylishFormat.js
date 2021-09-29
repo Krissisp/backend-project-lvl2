@@ -7,7 +7,7 @@ export default function stylish(value, replacer = ' ', space = 1) {
         return `${acc}${replacer.repeat(space * depth - indent)}${element[0]} ${element[1]}: ${element[2]}`;
       }
       if (Array.isArray(element[2])) {
-        return `${acc}${replacer.repeat(space * depth - indent)}${element[0]} ${element[1]}:{ ${iter(element[2], depth + 1)}\n${replacer.repeat(space * depth)}}`;
+        return `${acc}${replacer.repeat(space * depth - indent)}${element[0]} ${element[1]}: {\n${iter(element[2], depth + 1)}\n${replacer.repeat(space * depth)}}`;
       }
       return acc;
     }, '');
