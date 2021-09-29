@@ -12,13 +12,13 @@ const read = (str) => {
 };
 
 it('test genDiff format stylish', () => {
-  expect(genDiff('file1.yaml', 'file2.yml', 'stylish')).toEqual(read('expectStylish.txt'));
+  expect(genDiff('file1.yml', 'file2.yml', 'stylish')).toEqual(read('expectStylish.txt'));
 });
 
 it('test genDiff format plain', () => {
-  expect(genDiff('file1.yaml', 'file2.yml', 'plain')).toEqual(read('expectPlain.txt'));
+  expect(genDiff('file1.yml', 'file2.yml', 'plain')).toEqual(read('expectPlain.txt'));
 });
 
 it('test genDiff format json', () => {
-  expect(genDiff('file1.yaml', 'file2.yml', 'json')).toEqual(read('expected.json'));
+  expect(genDiff('file1.yml', 'file2.yml', 'json')).toEqual(read('expected.json'));
 });

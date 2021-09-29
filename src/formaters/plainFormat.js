@@ -3,7 +3,6 @@ import _ from 'lodash';
 export default function plain(value) {
   const iter = (array, ansentry) => {
     const result = array.reduce((acc, element, index) => {
-      let acc1 = acc;
       const desiredElement = element[1];
       const valueElement = element[2];
       const firstIndexElement1 = _.indexOf(array.flat(1), desiredElement, 0);
@@ -40,9 +39,7 @@ export default function plain(value) {
         && typeof (valueNexElement) !== 'boolean' && valueNexElement !== null && typeof (valueNexElement) !== 'number' && !Array.isArray(valueNexElement)) {
           acc1 += `From '${valueElement}' to '${valueNexElement}'`;
         }
-        // else {
-        // acc += `From '${valueElement}' to '${valueNexElement}'`;
-        // }
+
         array.splice(index + 1, 1);
       } else if (element[0] === '-') {
         acc1 += `\nProperty '${[...ansentry, element[1]].join('.')}' was removed`;

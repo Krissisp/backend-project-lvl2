@@ -20,15 +20,7 @@ export const isObject = (value) => {
 
 export const withOutComparison = (object) => {
   const array = _.entries(object);
-  const arraySort = _.sortBy(array, [function sort(a, b) {
-    if (a < b) {
-      return 1;
-    }
-    if (a > b) {
-      return -1;
-    }
-    return 0;
-  }]);
+  const arraySort = _.sortBy(array);
   return arraySort.reduce((acc, element) => {
     if (!isObject(element[1])) {
       acc.push([' ', element[0], element[1]]);
@@ -41,17 +33,8 @@ export const withOutComparison = (object) => {
 };
 
 export const createDiff = (object1, object2) => {
-  const mergeObject = { ...object1, ...object2 };
-  const mergeObjectWithArray = _.entries(mergeObject).sort();
-  const mergeObjectWithArraySort = _.sortBy(mergeObjectWithArray, [function sort(a, b) {
-    if (a < b) {
-      return 1;
-    }
-    if (a > b) {
-      return -1;
-    }
-    return 0;
-  }]);
+  const mergeObjectWithArray = _.entries({ ...object1, ...object2 });
+  const mergeObjectWithArraySort = _.sortBy(mergeObjectWithArray);
   return mergeObjectWithArraySort.reduce((acc, keyValue) => {
     if (!_.has(object1, `${keyValue[0]}`) && _.has(object2, `${keyValue[0]}`)) {
       if (!isObject(object2[keyValue[0]])) {
