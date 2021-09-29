@@ -1,5 +1,5 @@
 export default function json(array) {
-  array.reduce((acc, element) => {
+  return array.reduce((acc, element) => {
     if (Array.isArray(element[2])) {
       acc[`${element[0]} ${element[1]}`] = json(element[2]);
     }
