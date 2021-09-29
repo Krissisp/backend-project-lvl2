@@ -10,7 +10,7 @@ export default function stylish(value, replacer = ' ', space = 1) {
         return `${acc}${iter(element[2], depth + 1)}\n${replacer.repeat(space * depth)}}`;
       }
       return acc;
-    }, '{');
+    }, '');
     return result;
   };
   return `${iter(value, 1)}\n}`;
