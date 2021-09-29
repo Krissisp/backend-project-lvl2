@@ -42,8 +42,17 @@ export const withOutComparison = (object) => {
 
 export const createDiff = (object1, object2) => {
   const mergeObject = { ...object1, ...object2 };
-  const mergeObjectSort = Object.entries(mergeObject).sort();
-  return mergeObjectSort.reduce((acc, keyValue) => {
+  const mergeObjectWithArray = _.entries(mergeObject).sort();
+  const mergeObjectWithArraySort = _.sortBy(mergeObjectWithArray, [function sort(a, b) {
+    if (a < b) {
+      return 1;
+    }
+    if (a > b) {
+      return -1;
+    }
+    return 0;
+  }]);
+  return mergeObjectWithArraySort.reduce((acc, keyValue) => {
     if (!_.has(object1, `${keyValue[0]}`) && _.has(object2, `${keyValue[0]}`)) {
       if (!isObject(object2[keyValue[0]])) {
         acc.push(['+', keyValue[0], object2[keyValue[0]]]);
