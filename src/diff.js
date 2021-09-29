@@ -31,55 +31,63 @@ export const withOutComparison = (object) => {
   }]);
   return arraySort.reduce((acc, element) => {
     if (!isObject(element[1])) {
-      acc.push([' ', element[0], element[1]]);
+      acc._.concat(acc, [' ', element[0], element[1]]);
     }
     if (isObject(element[1])) {
-      acc.push([' ', element[0], withOutComparison(element[1])]);
+      acc._.concat(acc, [' ', element[0], withOutComparison(element[1])]);
     }
     return acc;
   }, []);
 };
 
 export const createDiff = (object1, object2) => {
-  const mergeObject = { ...object1, ...object2 };
-  const mergeObjectSort = Object.entries(mergeObject).sort();
-  return mergeObjectSort.reduce((acc, keyValue) => {
+  const mergeObjectWithArray = _.entries({ ...object1, ...object2 });
+  const mergeObjectWithArraySort = _.sortBy(mergeObjectWithArray, [function sort(a, b) {
+    if (a < b) {
+      return 1;
+    }
+    if (a > b) {
+      return -1;
+    }
+    return 0;
+  }]);
+  return mergeObjectWithArraySort.reduce((acc, keyValue) => {
     if (!_.has(object1, `${keyValue[0]}`) && _.has(object2, `${keyValue[0]}`)) {
       if (!isObject(object2[keyValue[0]])) {
-        acc.push(['+', keyValue[0], object2[keyValue[0]]]);
+        acc._.concat(acc, ['+', keyValue[0], object2[keyValue[0]]]);
       }
       if (isObject(object2[keyValue[0]])) {
-        acc.push(['+', keyValue[0], withOutComparison(object2[keyValue[0]])]);
+        acc._.concat(acc, ['+', keyValue[0], withOutComparison(object2[keyValue[0]])]);
       }
     }
     if (_.has(object1, `${keyValue[0]}`) && !_.has(object2, `${keyValue[0]}`)) {
       if (!isObject(object1[keyValue[0]])) {
-        acc.push(['-', keyValue[0], object1[keyValue[0]]]);
+        acc._.concat(acc, ['-', keyValue[0], object1[keyValue[0]]]);
       }
       if (isObject(object1[keyValue[0]])) {
-        acc.push(['-', keyValue[0], withOutComparison(object1[keyValue[0]])]);
+        acc._.concat(acc, ['-', keyValue[0], withOutComparison(object1[keyValue[0]])]);
       }
     }
     if (_.has(object1, `${keyValue[0]}`) && _.has(object2, `${keyValue[0]}`)) {
       if (!isObject(object1[keyValue[0]]) && !isObject(object2[keyValue[0]])
       && object2[keyValue[0]] !== object1[keyValue[0]]) {
-        acc.push(['-', keyValue[0], object1[keyValue[0]]]);
-        acc.push(['+', keyValue[0], object2[keyValue[0]]]);
+        acc._.concat(acc, ['-', keyValue[0], object1[keyValue[0]]]);
+        acc._.concat(acc, ['+', keyValue[0], object2[keyValue[0]]]);
       }
       if (!isObject(object1[keyValue[0]]) && !isObject(object2[keyValue[0]])
       && object2[keyValue[0]] === object1[keyValue[0]]) {
-        acc.push([' ', keyValue[0], object1[keyValue[0]]]);
+        acc._.concat(acc, [' ', keyValue[0], object1[keyValue[0]]]);
       }
       if (isObject(object1[keyValue[0]]) && !isObject(object2[keyValue[0]])) {
-        acc.push(['-', keyValue[0], withOutComparison(object1[keyValue[0]])]);
+        acc._.concat(acc, ['-', keyValue[0], withOutComparison(object1[keyValue[0]])]);
         acc.push(['+', keyValue[0], object2[keyValue[0]]]);
       }
       if (!isObject(object1[keyValue[0]]) && isObject(object2[keyValue[0]])) {
-        acc.push(['-', keyValue[0], object1[keyValue[0]]]);
-        acc.push(['+', keyValue[0], withOutComparison(object2[keyValue[0]])]);
+        acc._.concat(acc, ['-', keyValue[0], object1[keyValue[0]]]);
+        acc._.concat(acc, ['+', keyValue[0], withOutComparison(object2[keyValue[0]])]);
       }
       if (isObject(object1[keyValue[0]]) && isObject(object2[keyValue[0]])) {
-        acc.push([' ', keyValue[0], createDiff(object1[keyValue[0]], object2[keyValue[0]])]);
+        acc._.concat(acc, [' ', keyValue[0], createDiff(object1[keyValue[0]], object2[keyValue[0]])]);
       }
     }
     return acc;
