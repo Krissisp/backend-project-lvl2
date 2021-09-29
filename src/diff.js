@@ -23,12 +23,9 @@ export const withOutComparison = (object) => {
   const arraySort = _.sortBy(array);
   return arraySort.reduce((acc, element) => {
     if (!isObject(element[1])) {
-      acc.push([' ', element[0], element[1]]);
+      return [...acc, [' ', element[0], element[1]]];
     }
-    if (isObject(element[1])) {
-      acc.push([' ', element[0], withOutComparison(element[1])]);
-    }
-    return acc;
+    return [...acc, [' ', element[0], withOutComparison(element[1])]];
   }, []);
 };
 
@@ -38,40 +35,55 @@ export const createDiff = (object1, object2) => {
   return mergeObjectWithArraySort.reduce((acc, keyValue) => {
     if (!_.has(object1, `${keyValue[0]}`) && _.has(object2, `${keyValue[0]}`)) {
       if (!isObject(object2[keyValue[0]])) {
-        acc.push(['+', keyValue[0], object2[keyValue[0]]]);
+        return [...acc, ['+', keyValue[0], object2[keyValue[0]]]];
       }
       if (isObject(object2[keyValue[0]])) {
-        acc.push(['+', keyValue[0], withOutComparison(object2[keyValue[0]])]);
+        return [...acc, ['+', keyValue[0], withOutComparison(object2[keyValue[0]])]];
       }
     }
     if (_.has(object1, `${keyValue[0]}`) && !_.has(object2, `${keyValue[0]}`)) {
       if (!isObject(object1[keyValue[0]])) {
-        acc.push(['-', keyValue[0], object1[keyValue[0]]]);
+        return [...acc, ['-', keyValue[0], object1[keyValue[0]]]];
       }
       if (isObject(object1[keyValue[0]])) {
-        acc.push(['-', keyValue[0], withOutComparison(object1[keyValue[0]])]);
+        return [...acc, ['-', keyValue[0], withOutComparison(object1[keyValue[0]])]];
       }
     }
     if (_.has(object1, `${keyValue[0]}`) && _.has(object2, `${keyValue[0]}`)) {
       if (!isObject(object1[keyValue[0]]) && !isObject(object2[keyValue[0]])
       && object2[keyValue[0]] !== object1[keyValue[0]]) {
-        acc.push(['-', keyValue[0], object1[keyValue[0]]]);
-        acc.push(['+', keyValue[0], object2[keyValue[0]]]);
+        return [
+          ...acc,
+          ['-', keyValue[0], object1[keyValue[0]]],
+          ['+', keyValue[0], object2[keyValue[0]]],
+        ];
       }
       if (!isObject(object1[keyValue[0]]) && !isObject(object2[keyValue[0]])
       && object2[keyValue[0]] === object1[keyValue[0]]) {
-        acc.push([' ', keyValue[0], object1[keyValue[0]]]);
+        return [
+          ...acc,
+          [' ', keyValue[0], object1[keyValue[0]]],
+        ];
       }
       if (isObject(object1[keyValue[0]]) && !isObject(object2[keyValue[0]])) {
-        acc.push(['-', keyValue[0], withOutComparison(object1[keyValue[0]])]);
-        acc.push(['+', keyValue[0], object2[keyValue[0]]]);
+        return [
+          ...acc,
+          ['-', keyValue[0], withOutComparison(object1[keyValue[0]])],
+          ['+', keyValue[0], object2[keyValue[0]]],
+        ];
       }
       if (!isObject(object1[keyValue[0]]) && isObject(object2[keyValue[0]])) {
-        acc.push(['-', keyValue[0], object1[keyValue[0]]]);
-        acc.push(['+', keyValue[0], withOutComparison(object2[keyValue[0]])]);
+        return [
+          ...acc,
+          ['-', keyValue[0], object1[keyValue[0]]],
+          ['+', keyValue[0], withOutComparison(object2[keyValue[0]])],
+        ];
       }
       if (isObject(object1[keyValue[0]]) && isObject(object2[keyValue[0]])) {
-        acc.push([' ', keyValue[0], createDiff(object1[keyValue[0]], object2[keyValue[0]])]);
+        return [
+          ...acc,
+          [' ', keyValue[0], createDiff(object1[keyValue[0]], object2[keyValue[0]])],
+        ];
       }
     }
     return acc;
