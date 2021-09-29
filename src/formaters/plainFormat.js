@@ -8,6 +8,9 @@ export default function plain(value) {
       const firstIndexElement1 = _.indexOf(array.flat(1), desiredElement, 0);
       const lastIndexElement1 = _.indexOf(array.flat(1), desiredElement, firstIndexElement1 + 1);
       const valueNexElement = array.flat(1)[lastIndexElement1 + 1];
+      const i = [];
+      i.push('tset');
+
       if (lastIndexElement1 !== -1) {
         acc += `\nProperty '${[...ansentry, desiredElement].join('.')}' was updated. `;
         if ((typeof (valueElement) === 'boolean' || typeof (valueElement) === 'number' || valueElement === null)
