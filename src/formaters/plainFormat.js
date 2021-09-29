@@ -49,7 +49,7 @@ export default function plain(value) {
         } else {
           acc += `\nProperty '${[...ansentry, element[1]].join('.')}' was added with value: `;
           if (typeof (element[2]) === 'boolean') {
-            acc1 += `${element[2]}`;
+            acc += `${element[2]}`;
           } else {
             acc += `'${element[2]}'`;
           }
