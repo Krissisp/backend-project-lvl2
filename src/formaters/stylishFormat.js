@@ -7,9 +7,9 @@ export default function stylish(value, replacer = ' ', space = 1) {
         return `${acc}${replacer.repeat(space * depth - indent)}${element[0]} ${element[1]}: ${element[2]}\n`;
       }
 
-      return `${acc}${replacer.repeat(space * depth - indent)}${element[0]} ${element[1]}: {\n${iter(element[2], depth + 1)}\n${replacer.repeat(space * depth)}}\n`;
+      return `${acc}${replacer.repeat(space * depth - indent)}${element[0]} ${element[1]}: {\n${iter(element[2], depth + 1)}\n${replacer.repeat(space * depth)}}\n`.trim();
     }, '');
-    return result.trim();
+    return result;
   };
   return `${iter(value, 1)}\n}`;
 }
