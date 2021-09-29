@@ -9,59 +9,59 @@ export default function plain(value) {
       const lastIndexElement1 = _.indexOf(array.flat(1), desiredElement, firstIndexElement1 + 1);
       const valueNexElement = array.flat(1)[lastIndexElement1 + 1];
       if (lastIndexElement1 !== -1) {
-        acc1 += `\nProperty '${[...ansentry, desiredElement].join('.')}' was updated. `;
+        acc += `\nProperty '${[...ansentry, desiredElement].join('.')}' was updated. `;
         if ((typeof (valueElement) === 'boolean' || typeof (valueElement) === 'number' || valueElement === null)
         && Array.isArray(valueNexElement)) {
-          acc1 += `From ${valueElement} to [complex value]`;
+          acc += `From ${valueElement} to [complex value]`;
         }
         if ((typeof (valueElement) === 'boolean' || typeof (valueElement) === 'number' || valueElement === null)
         && !Array.isArray(valueNexElement) && typeof (valueNexElement) !== 'boolean' && valueNexElement !== null) {
-          acc1 += `From ${valueElement} to '${valueNexElement}'`;
+          acc += `From ${valueElement} to '${valueNexElement}'`;
         }
         if ((typeof (valueElement) === 'boolean' || typeof (valueElement) === 'number' || valueElement === null)
         && (typeof (valueNexElement) === 'boolean' || valueNexElement === null || typeof (valueNexElement) === 'number')) {
-          acc1 += `From ${valueElement} to ${valueNexElement}`;
+          acc += `From ${valueElement} to ${valueNexElement}`;
         }
         if (typeof (valueElement) !== 'boolean' && typeof (valueElement) !== 'number' && valueElement !== null && !Array.isArray(valueElement)
         && (typeof (valueNexElement) === 'boolean' || valueNexElement === null || typeof (valueNexElement) === 'number')) {
-          acc1 += `From '${valueElement}' to ${valueNexElement}`;
+          acc += `From '${valueElement}' to ${valueNexElement}`;
         }
 
         if (Array.isArray(valueElement)
         && (typeof (valueNexElement) === 'boolean' || typeof (valueNexElement) === 'number' || valueNexElement === null)) {
-          acc1 += `From [complex value] to ${valueNexElement}`;
+          acc += `From [complex value] to ${valueNexElement}`;
         }
         if (Array.isArray(valueElement)
         && typeof (valueNexElement) !== 'boolean' && typeof (valueNexElement) !== 'number' && valueNexElement !== null) {
-          acc1 += `From [complex value] to '${valueNexElement}'`;
+          acc += `From [complex value] to '${valueNexElement}'`;
         }
         if (typeof (valueElement) !== 'boolean' && typeof (valueElement) !== 'number' && valueElement !== null && !Array.isArray(valueElement)
         && typeof (valueNexElement) !== 'boolean' && valueNexElement !== null && typeof (valueNexElement) !== 'number' && !Array.isArray(valueNexElement)) {
-          acc1 += `From '${valueElement}' to '${valueNexElement}'`;
+          acc += `From '${valueElement}' to '${valueNexElement}'`;
         }
 
         array.splice(index + 1, 1);
       } else if (element[0] === '-') {
-        acc1 += `\nProperty '${[...ansentry, element[1]].join('.')}' was removed`;
+        acc += `\nProperty '${[...ansentry, element[1]].join('.')}' was removed`;
       } else if (element[0] === '+') {
         if (Array.isArray(element[2])) {
-          acc1 += `\nProperty '${[...ansentry, element[1]].join('.')}' was added with value: [complex value]`;
+          acc += `\nProperty '${[...ansentry, element[1]].join('.')}' was added with value: [complex value]`;
         } else {
-          acc1 += `\nProperty '${[...ansentry, element[1]].join('.')}' was added with value: `;
+          acc += `\nProperty '${[...ansentry, element[1]].join('.')}' was added with value: `;
           if (typeof (element[2]) === 'boolean') {
             acc1 += `${element[2]}`;
           } else {
-            acc1 += `'${element[2]}'`;
+            acc += `'${element[2]}'`;
           }
         }
       } else if (Array.isArray(element[2])) {
         if (element[2].length >= 2) {
-          acc1 += `\n${iter(element[2], [...ansentry, element[1]])}`;
+          acc += `\n${iter(element[2], [...ansentry, element[1]])}`;
         } else {
-          acc1 += `\nProperty '${[...ansentry, element[1]].join('.')}' was added with value: [complex value]`;
+          acc += `\nProperty '${[...ansentry, element[1]].join('.')}' was added with value: [complex value]`;
         }
       }
-      return acc1;
+      return acc;
     }, '');
 
     return result.trim();
