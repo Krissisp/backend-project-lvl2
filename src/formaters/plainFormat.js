@@ -2,14 +2,15 @@ import _ from 'lodash';
 
 export default function plain(value) {
   const iter = (array, ansentry) => {
+    array.forEach(() => {
+
+    });
     const result = array.reduce((acc, element, index) => {
       const desiredElement = element[1];
       const valueElement = element[2];
       const firstIndexElement1 = _.indexOf(array.flat(1), desiredElement, 0);
       const lastIndexElement1 = _.indexOf(array.flat(1), desiredElement, firstIndexElement1 + 1);
       const valueNexElement = array.flat(1)[lastIndexElement1 + 1];
-      const i = [];
-      i.push('tset');
 
       if (lastIndexElement1 !== -1) {
         acc += `\nProperty '${[...ansentry, desiredElement].join('.')}' was updated. `;
