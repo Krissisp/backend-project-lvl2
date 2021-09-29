@@ -11,5 +11,5 @@ export default function stylish(value, replacer = ' ', space = 1) {
     }, '');
     return result;
   };
-  return `${iter(value, 1)}\n}`;
+  return `${iter(value, 1)}}`;
 }
